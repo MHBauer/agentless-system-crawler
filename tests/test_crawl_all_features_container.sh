@@ -8,9 +8,8 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-docker rm -f test_crawl_cpu_container_1 2> /dev/null > /dev/null
-docker run -d --name test_crawl_cpu_container_1 ubuntu bash -c "echo bla >> /etc/ric_config; mkdir -p /bla; echo bla >> /bla/ble; sleep 60" 2> /dev/null > /dev/null
-ID=`docker inspect -f '{{ .Id }}' test_crawl_cpu_container_1`
+docker rm -f test_crawl_cpu_container_1 &> /dev/null
+ID=`docker run -d --name test_crawl_cpu_container_1 ubuntu bash -c "echo bla >> /etc/ric_config; mkdir -p /bla; echo bla >> /bla/ble; sleep 60"`
 
 rm -f /tmp/test_crawl_all_features_container*
 
@@ -18,6 +17,8 @@ python2.7 ../config_and_metrics_crawler/crawler.py --crawlmode OUTCONTAINER \
 	--features=cpu,memory,os,config,file,package,dockerinspect,dockerhistory,metric,load --crawlContainers $ID \
 	--url file:///tmp/test_crawl_all_features_container --options \
 	'{"config": {"known_config_files":["etc/ric_config"]}, "file": {"root_dir": "/bla/"}}'
+
+sleep 5
 
 COUNT_1=`grep  ^cpu /tmp/test_crawl_all_features_container* | wc -l`
 COUNT_2=`grep  ^memory /tmp/test_crawl_all_features_container* | wc -l`
