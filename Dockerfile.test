@@ -10,15 +10,15 @@ RUN apk add --update \
     build-base \
     linux-headers \
     docker \
+  && pip install --upgrade pip \
   && rm -rf /var/cache/apk/*
+
+copy crawler/requirements.txt /requirements.txt
+copy tests/requirements.txt /requirements-test.txt
+run pip install -r requirements.txt && pip install -r requirements-test.txt
 
 WORKDIR /crawler
 
 COPY . /crawler
-RUN pip install -r crawler/requirements.txt
-RUN pip install -r tests/requirements.txt
 
-WORKDIR /crawler/tests
-CMD (docker daemon > ../docker.out 2>&1 &) && \
-	sleep 5 && \
-	py.test 
+CMD ls && pip install . && python -c "import sys; print sys.path" && py.test 
