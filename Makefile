@@ -8,3 +8,7 @@ build:
 test:
 	docker build -t agentless-system-crawler-test -f Dockerfile.test .
 	docker run --privileged -ti --rm agentless-system-crawler-test
+
+docs:
+	pip install -r requirements-docs.txt
+	sphinx-apidoc -o docs/source crawler
