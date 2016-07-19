@@ -21,17 +21,17 @@ before_install:
     # upgrade docker-engine to specific version
     - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine=${DOCKER_VERSION}
     # might as well upgrade pip to support TLS and get rid of the warnings
-    - sudo -H pip install --upgrade pip
-    - sudo -H pip install codecov pytest-cov
+    - pip install --upgrade pip
+    - pip install codecov pytest-cov
 
 # command to install dependencies
 # XXX: Now mock complains if we don't `sudo pip install`.
 install:
-  - sudo -H pip install --ignore-installed -r requirements-test.txt
+  - pip install --ignore-installed -r requirements-test.txt
   
 # command to run tests
 script:
-  - sudo -H python setup.py test --addopts '--cov=.'
+  - python setup.py test --addopts '--cov=.'
 
 after_success:
   - flake8 --count --exit-zero --max-complexity=10 --statistics .
